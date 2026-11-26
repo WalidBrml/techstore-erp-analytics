@@ -1,0 +1,871 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="TechStore Algeria — ERPNext Business Intelligence and SQL Analytics Portfolio Project">
+<title>TechStore Algeria | Business Analytics</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+
+<style>
+:root {
+  --bg: #f1f5f9;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --blue: #2563eb;
+  --teal: #0d9488;
+  --purple: #7c3aed;
+  --amber: #d97706;
+  --red: #dc2626;
+  --grid: #e2e8f0;
+}
+
+body.dark {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --border: #334155;
+  --grid: #334155;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", Arial, sans-serif;
+  transition: background .2s, color .2s;
+}
+
+header {
+  background: #0f172a;
+  color: white;
+  padding: 26px 32px;
+  border-bottom: 3px solid #2563eb;
+}
+
+.header-content {
+  max-width: 1600px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.brand {
+  color: #60a5fa;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+header h1 {
+  margin: 10px 0 6px;
+  font-size: 30px;
+}
+
+header p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+button, .button {
+  padding: 10px 16px;
+  border: 1px solid #475569;
+  background: #1e293b;
+  color: white;
+  border-radius: 7px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+button:hover, .button:hover {
+  background: #334155;
+}
+
+main {
+  max-width: 1600px;
+  margin: auto;
+  padding: 24px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.toolbar h2 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.tag {
+  display: inline-block;
+  background: #dbeafe;
+  color: #1d4ed8;
+  border-radius: 5px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.kpi {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: 0 2px 6px #00000006;
+}
+
+.kpi-label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.kpi-value {
+  font-size: clamp(20px, 2vw, 29px);
+  font-weight: 700;
+  color: var(--accent);
+  margin: 12px 0 8px;
+}
+
+.kpi-detail {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.panel {
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 6px #00000006;
+}
+
+.panel h3 {
+  font-size: 16px;
+  margin: 0 0 5px;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 0 0 20px;
+}
+
+.chart-container {
+  height: 250px;
+  position: relative;
+}
+
+.insight {
+  font-size: 12px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  margin: 16px 0 0;
+  line-height: 1.6;
+}
+
+.section-title {
+  margin: 30px 0 15px;
+  font-size: 20px;
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.insight-value {
+  color: var(--teal);
+  font-weight: 700;
+  font-size: 28px;
+  margin: 12px 0;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th, td {
+  text-align: right;
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+th:first-child, td:first-child {
+  text-align: left;
+}
+
+th {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+tfoot {
+  font-weight: 700;
+}
+
+.stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.stack span {
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 7px 12px;
+  font-size: 12px;
+}
+
+.about-text {
+  line-height: 1.8;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+footer {
+  text-align: center;
+  padding: 28px 20px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+footer a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+@media (max-width: 1000px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  main {
+    padding: 14px;
+  }
+
+  header {
+    padding: 20px;
+  }
+
+  header h1 {
+    font-size: 23px;
+  }
+
+  .charts, .insights-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi {
+    padding: 12px;
+  }
+
+  .kpi-value {
+    font-size: 20px;
+  }
+
+  .chart-container {
+    height: 235px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-content">
+    <div>
+      <div class="brand">TECHSTORE / ANALYTICS</div>
+      <h1>Business Performance Overview</h1>
+      <p>TechStore Algeria · ERPNext Business Intelligence Project</p>
+    </div>
+
+    <div class="header-actions">
+      <button id="themeButton" onclick="toggleTheme()">Dark mode</button>
+      <button onclick="exportCSV()">Export CSV</button>
+      <a class="button"
+         href="https://github.com/WalidBrml/techstore-erp-analytics"
+         target="_blank" rel="noopener">
+        GitHub Repository
+      </a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <div class="toolbar">
+    <div>
+      <h2>Executive Dashboard</h2>
+      <div class="meta">
+        Fiscal Year 2026 · Data as of 26 November 2026 · DZD
+      </div>
+    </div>
+
+    <span class="tag">SIMULATED BUSINESS DATA</span>
+  </div>
+
+  <section class="kpi-grid" id="kpiGrid"></section>
+
+  <section class="charts">
+
+    <article class="panel">
+      <h3>Financial Performance</h3>
+      <p class="subtitle">Revenue, merchandise costs and gross profit</p>
+      <div class="chart-container">
+        <canvas id="financialChart" role="img"
+          aria-label="Revenue 806000, costs 617000, profit 189000 DZD">
+        </canvas>
+      </div>
+      <p class="insight">
+        Gross profit represents 23.45% of total sales revenue.
+      </p>
+    </article>
+
+    <article class="panel">
+      <h3>Revenue by Product</h3>
+      <p class="subtitle">Contribution to total invoiced revenue</p>
+      <div class="chart-container">
+        <canvas id="revenueChart" role="img"
+          aria-label="Laptop revenue 550000, monitor revenue 256000 DZD">
+        </canvas>
+      </div>
+      <p class="insight">
+        Laptops contribute 68.24% of total revenue.
+      </p>
+    </article>
+
+    <article class="panel">
+      <h3>Gross Profit by Product</h3>
+      <p class="subtitle">Product-level profitability in DZD</p>
+      <div class="chart-container">
+        <canvas id="profitChart" role="img"
+          aria-label="Laptop profit 125000, monitor profit 64000 DZD">
+        </canvas>
+      </div>
+      <p class="insight">
+        Laptops generate more absolute profit, while monitors have a higher margin.
+      </p>
+    </article>
+
+    <article class="panel">
+      <h3>Inventory Analysis</h3>
+      <p class="subtitle">Units sold compared with remaining stock</p>
+      <div class="chart-container">
+        <canvas id="inventoryChart" role="img"
+          aria-label="Laptops 5 sold and 5 remaining, monitors 8 sold and 7 remaining">
+        </canvas>
+      </div>
+      <p class="insight">
+        13 of 25 purchased units have been sold, leaving 12 units in stock.
+      </p>
+    </article>
+
+    <article class="panel">
+      <h3>Bank Balance Evolution</h3>
+      <p class="subtitle">Running balance by transaction sequence</p>
+      <div class="chart-container">
+        <canvas id="bankChart" role="img"
+          aria-label="Bank balance moves from 3000000 to 2280050 to 2759620 DZD">
+        </canvas>
+      </div>
+      <p class="insight">
+        All three transactions occurred on 26 November 2026.
+        This is a transaction sequence, not a monthly trend.
+      </p>
+    </article>
+
+    <article class="panel">
+      <h3>Receivables vs. Payables</h3>
+      <p class="subtitle">Outstanding customer and supplier balances</p>
+      <div class="chart-container">
+        <canvas id="workingCapitalChart" role="img"
+          aria-label="Receivables 479570, payables 719950 DZD">
+        </canvas>
+      </div>
+      <p class="insight">
+        Supplier obligations exceed customer receivables by 240,380 DZD.
+      </p>
+    </article>
+
+  </section>
+
+  <h2 class="section-title">Key Business Insights</h2>
+
+  <section class="insights-grid">
+
+    <article class="panel">
+      <h3>Revenue Contribution</h3>
+      <div class="insight-value">68.24%</div>
+      <p class="subtitle">Share of revenue generated by laptops</p>
+    </article>
+
+    <article class="panel">
+      <h3>Highest Product Margin</h3>
+      <div class="insight-value">25.00%</div>
+      <p class="subtitle">Dell Monitor 24-inch gross margin</p>
+    </article>
+
+    <article class="panel">
+      <h3>Inventory Sell-through</h3>
+      <div class="insight-value">52.00%</div>
+      <p class="subtitle">Percentage of purchased units sold</p>
+    </article>
+
+  </section>
+
+  <h2 class="section-title">Product Profitability Details</h2>
+
+  <section class="panel table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Revenue (DZD)</th>
+          <th>COGS (DZD)</th>
+          <th>Gross Profit (DZD)</th>
+          <th>Gross Margin</th>
+          <th>Units Sold</th>
+          <th>Remaining</th>
+        </tr>
+      </thead>
+
+      <tbody id="productTable"></tbody>
+
+      <tfoot>
+        <tr>
+          <td>Total</td>
+          <td>806,000</td>
+          <td>617,000</td>
+          <td>189,000</td>
+          <td>23.45%</td>
+          <td>13</td>
+          <td>12</td>
+        </tr>
+      </tfoot>
+    </table>
+  </section>
+
+  <h2 class="section-title">About the Project</h2>
+
+  <section class="panel">
+    <h3>From ERP transactions to business insights</h3>
+
+    <p class="about-text">
+      TechStore Algeria is a simulated retail business created
+      as a practical Data Analytics and Business Intelligence
+      portfolio project. Purchasing, sales, inventory and
+      accounting transactions were generated in ERPNext and
+      analyzed through custom SQL reports.
+    </p>
+
+    <p class="about-text">
+      The original ERPNext implementation contains seven custom
+      SQL reports, eight financial KPIs and six analytical charts.
+      Financial results were reconciled against General Ledger,
+      Profit and Loss, Balance Sheet and Stock Balance reports.
+    </p>
+
+    <p class="about-text">
+      This public demonstration uses a validated snapshot of the
+      simulated dataset. It is not connected to a live ERPNext
+      server or production database.
+    </p>
+
+    <div class="stack">
+      <span>ERPNext v16</span>
+      <span>Frappe Framework</span>
+      <span>MariaDB</span>
+      <span>SQL</span>
+      <span>SQL JOINs</span>
+      <span>CTEs</span>
+      <span>Window Functions</span>
+      <span>Chart.js</span>
+      <span>WSL2</span>
+      <span>Ubuntu</span>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <strong>Developed by Walid Bouremel</strong><br>
+  Data Analytics & Business Intelligence Portfolio<br><br>
+
+  <a href="https://www.linkedin.com/in/walid-bouremel/"
+     target="_blank" rel="noopener">LinkedIn</a>
+  &nbsp; · &nbsp;
+  <a href="https://github.com/WalidBrml"
+     target="_blank" rel="noopener">GitHub</a>
+
+  <br><br>
+  Educational project — simulated data, not actual company financial records.
+</footer>
+
+<script>
+const products = [
+  {
+    name: "HP Laptop 15",
+    revenue: 550000,
+    cost: 425000,
+    sold: 5,
+    purchased: 10
+  },
+  {
+    name: "Dell Monitor 24″",
+    revenue: 256000,
+    cost: 192000,
+    sold: 8,
+    purchased: 15
+  }
+];
+
+const bankTransactions = [
+  { name: "Capital", change: 3000000 },
+  { name: "Supplier Payment", change: -719950 },
+  { name: "Customer Payment", change: 479570 }
+];
+
+const receivables = 479570;
+const payables = 719950;
+
+const revenue = products.reduce((s,p) => s+p.revenue, 0);
+const cogs = products.reduce((s,p) => s+p.cost, 0);
+const profit = revenue - cogs;
+const margin = profit / revenue * 100;
+const bankBalance = bankTransactions.reduce((s,t) => s+t.change, 0);
+
+const inventory = products.reduce(
+  (s,p) => s + (p.purchased-p.sold)*(p.cost/p.sold), 0
+);
+
+const format = n => n.toLocaleString("en-US", {
+  maximumFractionDigits: 2
+});
+
+const money = n => format(n) + " DZD";
+
+const kpis = [
+  ["Sales Revenue", money(revenue), "Revenue excluding TVA", "#2563eb"],
+  ["Gross Profit", money(profit), "Revenue minus COGS", "#0d9488"],
+  ["Gross Margin", margin.toFixed(2)+"%", "Gross profit / Revenue", "#7c3aed"],
+  ["Cost of Goods Sold", money(cogs), "Cost of merchandise sold", "#64748b"],
+  ["Bank Balance", money(bankBalance), "Recorded BNA balance", "#0284c7"],
+  ["Inventory Value", money(inventory), "12 remaining units at cost", "#059669"],
+  ["Accounts Receivable", money(receivables), "Outstanding customer balance", "#d97706"],
+  ["Accounts Payable", money(payables), "Outstanding supplier balance", "#dc2626"]
+];
+
+document.getElementById("kpiGrid").innerHTML = kpis.map(k => `
+  <article class="kpi" style="--accent:${k[3]}">
+    <div class="kpi-label">${k[0]}</div>
+    <div class="kpi-value">${k[1]}</div>
+    <div class="kpi-detail">${k[2]}</div>
+  </article>
+`).join("");
+
+document.getElementById("productTable").innerHTML = products.map(p => `
+  <tr>
+    <td>${p.name}</td>
+    <td>${format(p.revenue)}</td>
+    <td>${format(p.cost)}</td>
+    <td>${format(p.revenue-p.cost)}</td>
+    <td>${((p.revenue-p.cost)/p.revenue*100).toFixed(2)}%</td>
+    <td>${p.sold}</td>
+    <td>${p.purchased-p.sold}</td>
+  </tr>
+`).join("");
+
+const charts = [];
+
+function compact(n) {
+  if (Math.abs(n) >= 1000000)
+    return (n/1000000).toFixed(2).replace(/0+$/,"").replace(/\.$/,"")+"M";
+  if (Math.abs(n) >= 1000)
+    return format(n/1000)+"K";
+  return format(n);
+}
+
+function chartOptions(currency=true) {
+  const css = getComputedStyle(document.body);
+  const text = css.getPropertyValue("--muted").trim();
+  const grid = css.getPropertyValue("--grid").trim();
+
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+        labels: { color: text }
+      },
+      tooltip: {
+        callbacks: {
+          label: ctx => (ctx.dataset.label || "") + ": " +
+            (currency ? money(ctx.raw) : format(ctx.raw)+" units")
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { color: text }
+      },
+      y: {
+        beginAtZero: true,
+        grid: { color: grid },
+        ticks: {
+          color: text,
+          callback: value => compact(value)
+        }
+      }
+    }
+  };
+}
+
+function addChart(id, config) {
+  charts.push(new Chart(document.getElementById(id), config));
+}
+
+function renderCharts() {
+  charts.forEach(c => c.destroy());
+  charts.length = 0;
+
+  if (typeof Chart === "undefined") {
+    document.querySelectorAll(".chart-container").forEach(el => {
+      el.textContent = "Charts unavailable. Please check your internet connection.";
+    });
+    return;
+  }
+
+  Chart.defaults.font.family = "Segoe UI, Arial, sans-serif";
+  Chart.defaults.font.size = 11;
+
+  addChart("financialChart", {
+    type: "bar",
+    data: {
+      labels: ["Revenue", "COGS", "Gross Profit"],
+      datasets: [{
+        label: "Amount",
+        data: [revenue, cogs, profit],
+        backgroundColor: ["#2563eb", "#64748b", "#0d9488"],
+        borderRadius: 5
+      }]
+    },
+    options: chartOptions()
+  });
+
+  addChart("revenueChart", {
+    type: "doughnut",
+    data: {
+      labels: products.map(p=>p.name),
+      datasets: [{
+        data: products.map(p=>p.revenue),
+        backgroundColor: ["#2563eb","#0d9488"],
+        borderWidth: 0,
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: "66%",
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: {
+            color: getComputedStyle(document.body)
+              .getPropertyValue("--muted").trim(),
+            padding: 18
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => ctx.label+": "+money(ctx.raw)+
+              " ("+(ctx.raw/revenue*100).toFixed(2)+"%)"
+          }
+        }
+      }
+    }
+  });
+
+  addChart("profitChart", {
+    type: "bar",
+    data: {
+      labels: products.map(p=>p.name),
+      datasets: [{
+        label: "Gross Profit",
+        data: products.map(p=>p.revenue-p.cost),
+        backgroundColor: "#0d9488",
+        borderRadius: 5
+      }]
+    },
+    options: chartOptions()
+  });
+
+  const inventoryOptions = chartOptions(false);
+  inventoryOptions.plugins.legend.display = true;
+  inventoryOptions.plugins.legend.position = "bottom";
+  inventoryOptions.scales.y.ticks.precision = 0;
+
+  addChart("inventoryChart", {
+    type: "bar",
+    data: {
+      labels: products.map(p=>p.name),
+      datasets: [
+        {
+          label: "Units Sold",
+          data: products.map(p=>p.sold),
+          backgroundColor: "#2563eb",
+          borderRadius: 4
+        },
+        {
+          label: "Remaining Stock",
+          data: products.map(p=>p.purchased-p.sold),
+          backgroundColor: "#0d9488",
+          borderRadius: 4
+        }
+      ]
+    },
+    options: inventoryOptions
+  });
+
+  let running = 0;
+  const balances = bankTransactions.map(t => running += t.change);
+  const bankOptions = chartOptions();
+  bankOptions.scales.y.beginAtZero = false;
+
+  addChart("bankChart", {
+    type: "line",
+    data: {
+      labels: bankTransactions.map(t=>t.name),
+      datasets: [{
+        label: "Bank Balance",
+        data: balances,
+        borderColor: "#0284c7",
+        backgroundColor: "rgba(2,132,199,0.12)",
+        fill: true,
+        tension: 0,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        borderWidth: 2
+      }]
+    },
+    options: bankOptions
+  });
+
+  addChart("workingCapitalChart", {
+    type: "bar",
+    data: {
+      labels: ["Receivables", "Payables"],
+      datasets: [{
+        label: "Outstanding Balance",
+        data: [receivables,payables],
+        backgroundColor: ["#d97706","#dc2626"],
+        borderRadius: 5
+      }]
+    },
+    options: chartOptions()
+  });
+}
+
+function toggleTheme() {
+  document.body.classList.toggle("dark");
+  document.getElementById("themeButton").textContent =
+    document.body.classList.contains("dark")
+    ? "Light mode" : "Dark mode";
+  renderCharts();
+}
+
+function exportCSV() {
+  const rows = [
+    ["Product","Revenue_DZD","COGS_DZD","Gross_Profit_DZD",
+     "Gross_Margin_Percent","Units_Sold","Remaining_Stock"],
+    ...products.map(p => [
+      p.name,
+      p.revenue,
+      p.cost,
+      p.revenue-p.cost,
+      ((p.revenue-p.cost)/p.revenue*100).toFixed(2),
+      p.sold,
+      p.purchased-p.sold
+    ])
+  ];
+
+  const csv = "\uFEFF" + rows.map(r => r.join(",")).join("\n");
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+
+  a.href = url;
+  a.download = "techstore_product_analytics.csv";
+  a.click();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+renderCharts();
+</script>
+
+</body>
+</html>
