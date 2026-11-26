@@ -7,10 +7,15 @@
 ![BI](https://img.shields.io/badge/Business-Intelligence-0D9488)
 ![Status](https://img.shields.io/badge/Status-Operational-success)
 
-## Live Dashboard
+## Interactive Dashboard
 
 [Explore the Interactive Dashboard](https://walidbrml.github.io/techstore-erp-analytics/)
 
+## Original ERPNext Dashboard
+
+The original dashboard was developed directly within ERPNext v16 using seven custom SQL reports connected to MariaDB.
+
+![ERPNext Business Analytics Dashboard](01_Business_Analytics_Dashboard.png)
 ## Project Overview
 
 What started as an interest in learning ERPNext became a practical Data Analytics and Business Intelligence project.
